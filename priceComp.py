@@ -19,22 +19,31 @@ def priceMatch(filename):
         return -1
     for line in general:
         splitter = line.split('|')
-        date_time_obj1 = datetime.datetime.strptime(splitter[TIME_COL], '%H:%M:%S.%f')
+        if len(splitter) < 4:
+            continue
+        date_time_obj1 = datetime.datetime.strptime(splitter[TIME_COL][0:12], '%H:%M:%S.%f')
         if splitter[PRICE_COL].startswith("PRICES") == False:
             continue
+        strike = splitter[PRICE_COL][12:16]
         for key in Dict:
-            if splitter[PRICE_COL][12:16] == key:
+            if strike == key:
                 seperate = Dict[key].split('|')
-                date_time_obj2 = datetime.datetime.strptime(seperate[TIME_COL], '%H:%M:%S.%f')
+                date_time_obj2 = datetime.datetime.strptime(seperate[TIME_COL][0:12], '%H:%M:%S.%f')
                 if date_time_obj1 == date_time_obj2:
                     answer = comp(line, Dict[key])
+                    if answer != "No errors":
+                        return answer
+                    else:
+                        continue
                 else:
                     Dict[key] = line
                     break
-        if Dict[splitter[PRICE_COL][12:16]] == line:
+        if len(Dict) == 0:
+            Dict[strike] = line        
+        elif Dict[strike] == line:
             continue
         else:
-            Dict[splitter[PRICE_COL][12:16]] = line
+            Dict[strike] = line
     return answer
 
 def comp(line1, line2):
@@ -52,10 +61,10 @@ def comp(line1, line2):
     sellStockPrice1 = duplicate[SELL_COL][9:19]
     sellStockPrice2 = multiply[SELL_COL][9:19]
     if(buyPrice1 == buyPrice2):
-        if(buyStockPrice1 == buyStockPrice2):
+        if(buyStockPrice1 != buyStockPrice2):
             answer = line1, "\n", line2
     elif(sellPrice1 == sellPrice2):
-        if(sellStockPrice1 == sellStockPrice2):
+        if(sellStockPrice1 != sellStockPrice2):
             answer = line1, "\n", line2
     return answer
 
