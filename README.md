@@ -3,3 +3,5 @@ The priceComp.py code compares two lines in a given file with the same strike va
 The code checks to see if the buy or sell prices are the same for each line.
 If they are, then the code checks to see if the futures for the buy or sell for each line are different.
 If the two futures are different, then the code returns the two lines, as that means that there was an error in another program.
+The .idea file contains PyCharm files for the project
+The tester.txt file contains a tester file that tests to see if the program can catch errors
