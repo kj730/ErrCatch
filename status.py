@@ -8,9 +8,11 @@ SYMBOL_COL = 6
 YEAR_COL = 7
 MONTH_COL = 8
 
+
 def control_status(filename, time, tool):
     is_on = True
-    time_param = datetime.datetime.strptime(time, '%H:%M:%S.%f')
+    statement = ""
+    time_param = datetime.datetime.strptime(time, '%H:%M:%S')
     tool_arr = []
     try:
         general = open(filename, "r")
@@ -29,7 +31,7 @@ def control_status(filename, time, tool):
     tool_arr.reverse()
     for x in tool_arr:
         cutter = x.split('|')
-        date_time_obj = datetime.datetime.strptime(cutter[TIME_COL][0:12], '%H:%M:%S.%f')
+        date_time_obj = datetime.datetime.strptime(cutter[TIME_COL][0:8], '%H:%M:%S')
         if date_time_obj > time_param:
             continue
         else:
@@ -39,19 +41,25 @@ def control_status(filename, time, tool):
                 is_on = False
             if cutter[SYMBOL_COL].find("*") > -1:
                 if is_on:
-                    return "Tool", tool, "is on at time:", date_time_obj
+                    statement = ("Tool " + tool + " is on at time: " + str(date_time_obj))
+                    return statement
                 else:
-                    return "Tool", tool, "is off at time:", date_time_obj
+                    statement = ("Tool " + tool + " is off at time: " + str(date_time_obj))
+                    return statement
             elif cutter[YEAR_COL].find("-1") > -1:
                 if is_on:
-                    return "Symbol", cutter[SYMBOL_COL], "is on at time:", date_time_obj
+                    statement = ("Symbol " + cutter[SYMBOL_COL] + " is on at time: " + str(date_time_obj))
+                    return statement
                 else:
-                    return "Symbol", cutter[SYMBOL_COL], "is off at time:", date_time_obj
+                    statement = ("Symbol " + cutter[SYMBOL_COL] + " is off at time: " + str(date_time_obj))
+                    return statement
             else:
                 if is_on:
-                    return "Symbol", cutter[SYMBOL_COL], "at year", cutter[YEAR_COL], "and month", cutter[MONTH_COL], "is on at time:", date_time_obj
+                    statement = ("Symbol " + cutter[SYMBOL_COL] + " at year " + cutter[YEAR_COL] + " and month " + cutter[MONTH_COL] + " is on at time: " + str(date_time_obj))
+                    return statement
                 else:
-                    return "Symbol", cutter[SYMBOL_COL], "at year", cutter[YEAR_COL], "and month", cutter[MONTH_COL], "is off at time:", date_time_obj
+                    statement = ("Symbol " + cutter[SYMBOL_COL] + " at year " + cutter[YEAR_COL] + " and month " + cutter[MONTH_COL] + " is off at time: " + str(date_time_obj))
+                    return statement
 
 
 def main():

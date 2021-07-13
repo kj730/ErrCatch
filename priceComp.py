@@ -41,7 +41,7 @@ def priceMatch(filename):
                     return answer
         Dict[strike] = line
     return answer
-#checks to see if there are two lines with the same but/sell prices, but different future prices
+#checks to see if there are two lines with the same buy/sell prices, but different future prices
 def comp(line1, line2):
     #815818496|IN|PRICES NG1NC2750 B:0.5170/3.26342593/Y A:0.5220/3.27332736/Y
     answer = "No errors"
