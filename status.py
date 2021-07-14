@@ -14,6 +14,8 @@ def control_status(filename, time, tool):
     statement = ""
     time_param = datetime.datetime.strptime(time, '%H:%M:%S')
     tool_arr = []
+    find_symbol = False
+    find_dates = False
     try:
         general = open(filename, "r")
     except OSError as err:
@@ -26,7 +28,11 @@ def control_status(filename, time, tool):
         splitter = line.split('|')
         if len(splitter) < MONTH_COL + 1:
             continue
-        if splitter[TOOL_COL].find(tool) > -1:
+        if splitter[TOOL_COL].find(tool) == -1:
+            continue
+        if splitter[ON_OFF_COL].find("ON") > -1:
+            tool_arr.append(line)
+        elif splitter[ON_OFF_COL].find("OFF") > -1:
             tool_arr.append(line)
     tool_arr.reverse()
     for x in tool_arr:
@@ -42,24 +48,26 @@ def control_status(filename, time, tool):
             if cutter[SYMBOL_COL].find("*") > -1:
                 if is_on:
                     statement = ("Tool " + tool + " is on at time: " + str(date_time_obj))
-                    return statement
+                    print(statement)
                 else:
                     statement = ("Tool " + tool + " is off at time: " + str(date_time_obj))
-                    return statement
+                    print(statement)
             elif cutter[YEAR_COL].find("-1") > -1:
                 if is_on:
                     statement = ("Symbol " + cutter[SYMBOL_COL] + " is on at time: " + str(date_time_obj))
-                    return statement
+                    print(statement)
+                    find_dates = True
                 else:
                     statement = ("Symbol " + cutter[SYMBOL_COL] + " is off at time: " + str(date_time_obj))
-                    return statement
-            else:
+                    print(statement)
+            elif find_dates:
                 if is_on:
                     statement = ("Symbol " + cutter[SYMBOL_COL] + " at year " + cutter[YEAR_COL] + " and month " + cutter[MONTH_COL] + " is on at time: " + str(date_time_obj))
-                    return statement
+                    print(statement)
                 else:
                     statement = ("Symbol " + cutter[SYMBOL_COL] + " at year " + cutter[YEAR_COL] + " and month " + cutter[MONTH_COL] + " is off at time: " + str(date_time_obj))
-                    return statement
+                    print(statement)
+
 
 
 def main():
@@ -69,8 +77,7 @@ def main():
     filename = sys.argv[1]
     time = sys.argv[2]
     tool = sys.argv[3]
-    answer = control_status(filename, time, tool)
-    print(answer)
+    control_status(filename, time, tool)
 
 
 if __name__ == "__main__":
