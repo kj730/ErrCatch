@@ -14,8 +14,10 @@ def control_status(filename, time, tool):
     statement = ""
     time_param = datetime.datetime.strptime(time, '%H:%M:%S')
     tool_arr = []
-    find_symbol = False
-    find_dates = False
+    have_tool = False
+    have_symbol = False
+    dates_arr = []
+    temp_dates_array = []
     try:
         general = open(filename, "r")
     except OSError as err:
@@ -46,28 +48,52 @@ def control_status(filename, time, tool):
             else:
                 is_on = False
             if cutter[SYMBOL_COL].find("*") > -1:
-                if is_on:
-                    statement = ("Tool " + tool + " is on at time: " + str(date_time_obj))
-                    print(statement)
-                else:
-                    statement = ("Tool " + tool + " is off at time: " + str(date_time_obj))
-                    print(statement)
-            elif cutter[YEAR_COL].find("-1") > -1:
-                if is_on:
-                    statement = ("Symbol " + cutter[SYMBOL_COL] + " is on at time: " + str(date_time_obj))
-                    print(statement)
-                    find_dates = True
-                else:
-                    statement = ("Symbol " + cutter[SYMBOL_COL] + " is off at time: " + str(date_time_obj))
-                    print(statement)
-            elif find_dates:
-                if is_on:
-                    statement = ("Symbol " + cutter[SYMBOL_COL] + " at year " + cutter[YEAR_COL] + " and month " + cutter[MONTH_COL] + " is on at time: " + str(date_time_obj))
-                    print(statement)
-                else:
-                    statement = ("Symbol " + cutter[SYMBOL_COL] + " at year " + cutter[YEAR_COL] + " and month " + cutter[MONTH_COL] + " is off at time: " + str(date_time_obj))
-                    print(statement)
+                if not have_tool:
+                    if is_on:
+                        statement = ("Tool " + tool + " is on at time: " + str(date_time_obj))
+                        print(statement)
+                        have_tool = True
+                    else:
+                        statement = ("Tool " + tool + " is off at time: " + str(date_time_obj))
+                        print(statement)
+                        have_tool = True
 
+            elif cutter[YEAR_COL].find("-1") > -1:
+                if not have_symbol:
+                    if is_on:
+                        statement = ("Symbol " + cutter[SYMBOL_COL] + " is on at time: " + str(date_time_obj))
+                        print(statement)
+                        have_symbol = True
+                    else:
+                        statement = ("Symbol " + cutter[SYMBOL_COL] + " is off at time: " + str(date_time_obj))
+                        print(statement)
+                        have_symbol = True
+            else:
+                temp_dates_array = [cutter[YEAR_COL], cutter[MONTH_COL]]
+                if len(dates_arr) == 0:
+                    dates_arr.append(temp_dates_array)
+                    if is_on:
+                        statement = ("Symbol " + cutter[SYMBOL_COL] + " at year " + cutter[YEAR_COL] + " and month " + cutter[MONTH_COL] + " is on at time: " + str(date_time_obj))
+                        print(statement)
+                    else:
+                        statement = ("Symbol " + cutter[SYMBOL_COL] + " at year " + cutter[YEAR_COL] + " and month " + cutter[MONTH_COL] + " is off at time: " + str(date_time_obj))
+                        print(statement)
+                else:
+                    answer = check_dates(dates_arr, temp_dates_array)
+                    if answer:
+                        if is_on:
+                            statement = ("Symbol " + cutter[SYMBOL_COL] + " at year " + cutter[YEAR_COL] + " and month " + cutter[MONTH_COL] + " is on at time: " + str(date_time_obj))
+                            print(statement)
+                        else:
+                            statement = ("Symbol " + cutter[SYMBOL_COL] + " at year " + cutter[YEAR_COL] + " and month " + cutter[MONTH_COL] + " is off at time: " + str(date_time_obj))
+                            print(statement)
+
+
+def check_dates(dates_arr, temp_dates_array):
+    if temp_dates_array in dates_arr:
+        return False
+    else:
+        return True
 
 
 def main():
