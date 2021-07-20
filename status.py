@@ -73,27 +73,25 @@ def control_status(filename, time, tool):
                 if len(dates_arr) == 0:
                     dates_arr.append(temp_dates_array)
                     if is_on:
-                        statement = ("Symbol " + cutter[SYMBOL_COL] + " at year " + cutter[YEAR_COL] + " and month " + cutter[MONTH_COL] + " is on at time: " + str(date_time_obj))
+                        statement = ("Symbol " + cutter[SYMBOL_COL] + " at year" + cutter[YEAR_COL] + " and month" + cutter[MONTH_COL] + " is on at time: " + str(date_time_obj))
                         print(statement)
                     else:
-                        statement = ("Symbol " + cutter[SYMBOL_COL] + " at year " + cutter[YEAR_COL] + " and month " + cutter[MONTH_COL] + " is off at time: " + str(date_time_obj))
+                        statement = ("Symbol " + cutter[SYMBOL_COL] + " at year" + cutter[YEAR_COL] + " and month" + cutter[MONTH_COL] + " is off at time: " + str(date_time_obj))
                         print(statement)
                 else:
                     answer = check_dates(dates_arr, temp_dates_array)
-                    if answer:
+                    if not answer:
                         if is_on:
-                            statement = ("Symbol " + cutter[SYMBOL_COL] + " at year " + cutter[YEAR_COL] + " and month " + cutter[MONTH_COL] + " is on at time: " + str(date_time_obj))
+                            statement = ("Symbol " + cutter[SYMBOL_COL] + " at year" + cutter[YEAR_COL] + " and month" + cutter[MONTH_COL] + " is on at time: " + str(date_time_obj))
                             print(statement)
                         else:
-                            statement = ("Symbol " + cutter[SYMBOL_COL] + " at year " + cutter[YEAR_COL] + " and month " + cutter[MONTH_COL] + " is off at time: " + str(date_time_obj))
+                            statement = ("Symbol " + cutter[SYMBOL_COL] + " at year" + cutter[YEAR_COL] + " and month" + cutter[MONTH_COL] + " is off at time: " + str(date_time_obj))
                             print(statement)
+                        dates_arr.append(temp_dates_array)
 
 
-def check_dates(dates_arr, temp_dates_array):
-    if temp_dates_array in dates_arr:
-        return False
-    else:
-        return True
+def check_dates(arr, inside_array):
+    return inside_array in arr
 
 
 def main():
